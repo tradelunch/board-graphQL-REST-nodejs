@@ -18,6 +18,8 @@ app.get('/', (req, res) => {
 });
 
 app.use('/user', require('./routes/user'));
+app.use('/post', require('./routes/post'));
+app.use('/comment', require('./routes/comment'));
 
 app.listen(PORT_PROD, _ => {
     console.log('Express server running on', PORT_PROD);
