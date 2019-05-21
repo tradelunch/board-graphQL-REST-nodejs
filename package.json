@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon start app.js -V -e css,js",
+    "start": "nodemon start app.js -V -e js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -9,7 +9,7 @@ const app = express();
 const { PORT_PROD } = process.env;
 
 // middleware
-app.use(logger('DEV'));
+app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 

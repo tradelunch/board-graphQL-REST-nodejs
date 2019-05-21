@@ -7,9 +7,7 @@ module.exports = (function () {
 
     Post.post = (req, res, next) => {
         const { postId: id } = req.params;
-        post.findOne({
-            where: { id }
-        })
+        post.findByPk(id)
         .then(post => res.json({ post }))
         .catch(err => res.send(err));
     };
@@ -33,14 +31,17 @@ module.exports = (function () {
         }, {
             where: { id }
         })
-        .then(ret => {
-            console.log(ret);
-            return post.findOne({
-                where: { id }
-            })
-            .then(post => res.json({ post }));
+        .then(result => {
+            console.log(result);
+            if (result == 1) 
+                return post.findOne({
+                    where: { id }
+                })
+                .then(post => res.json({ post }));
+            else
+                res.status(403).json({ Description: "Not Found" });
         })
-        .catch(err => res.send(err));
+        .catch(err => res.status(403).send(err));
     };
 
     Post.delete = async (req, res, next) => {

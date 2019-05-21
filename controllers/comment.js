@@ -7,9 +7,8 @@ module.exports = (function () {
     Comment.comment = (req, res, next) => {
         const { commentId: id } = req.params;
         // res.send(`comment commentid: ${id}`);
-        comment.findOne({
-            where: { id }
-        }).then(comment => res.json({ comment }));
+        comment.findByPk(id)
+        .then(comment => res.json({ comment }));
     };
 
     Comment.create = (req, res, next) => {
@@ -24,7 +23,6 @@ module.exports = (function () {
         // console.log(moment(Date.now()).tz("Asia/Seoul").format('YYYY-MM-DD-HH-mm-ss').toString());
         await comment.update({
             content,
-            updatedAt: Date.now()
         }, {
             where: { id }
         })
@@ -56,11 +54,5 @@ module.exports = (function () {
         })
         .catch(err => res.send(err));
     };
-
-    // Comment.list = (req, res, next) => {
-    //     const { page = 1 } = req.params;
-    //     res.send(`comment list ${page}`);
-    // };
-
     return Comment;
 })();

@@ -7,9 +7,7 @@ module.exports = (function () {
     User.user = (req, res, next) => {
         const { userId: id } = req.params;
         // res.send(`user userid: ${id}`);
-        user.findOne({
-            where: { id }
-        })
+        user.findByPk(id)
         .then(user => res.json({ user }))
         .catch(err => res.send(err));
     };
