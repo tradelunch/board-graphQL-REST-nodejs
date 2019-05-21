@@ -40,5 +40,5 @@
 | /comment/:id |  GET   | 댓글 가져오기                          |
 |   /comment   |  POST  | 댓글 작성하기 / 작성자, 내용           |
 |   /comment   |  PUT   | 댓글 수정하기 / 작성자, 내용, 수정시간 |
-|   /comment   | DELETE | 댓글 삭제 / 댓글 id                    |
+|   /comment   | DELETE | 댓글 삭제 /                            |
 
