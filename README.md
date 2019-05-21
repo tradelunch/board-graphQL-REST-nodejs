@@ -4,8 +4,6 @@
 
 ## RESTful API
 
-
-
 - 유저
 
 |             Resource              | Method | Description                                   |
@@ -41,4 +39,26 @@
 |   /comment   |  POST  | 댓글 작성하기 / 작성자, 내용           |
 |   /comment   |  PUT   | 댓글 수정하기 / 작성자, 내용, 수정시간 |
 |   /comment   | DELETE | 댓글 삭제 /                            |
+
+
+
+## DB 설정
+
+- 사용할 DB 생성 및 user 생성
+
+```mysql
+CREATE DATABASE board;
+CREATE USER 'class'@'localhost' IDENTIFIED BY '101';
+GRANT ALL PRIVILEGES ON board.* TO 'class'@'localhost';
+FLUSH PRIVILEGES;
+```
+
+
+
+## 프로젝트 설정
+
+```bash
+npm i
+npm start
+```
 
