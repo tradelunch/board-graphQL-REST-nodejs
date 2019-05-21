@@ -1,6 +1,5 @@
 const { comment } = require('../models');
 const { Op } = require('sequelize');
-const moment = require('moment');
 
 module.exports = (function () {
     const Comment = {};
@@ -9,9 +8,7 @@ module.exports = (function () {
         const { commentId: id } = req.params;
         // res.send(`comment commentid: ${id}`);
         comment.findOne({
-            where: {
-                id
-            }
+            where: { id }
         }).then(comment => res.json({ comment }));
     };
 
@@ -27,17 +24,13 @@ module.exports = (function () {
         // console.log(moment(Date.now()).tz("Asia/Seoul").format('YYYY-MM-DD-HH-mm-ss').toString());
         await comment.update({
             content,
-            updatedAt: moment(Date.now()).tz("Asia/Seoul")
+            updatedAt: Date.now()
         }, {
-            where: {
-                id
-            }
+            where: { id }
         }).then(ret => {
             console.log(ret);
             return comment.findOne({
-                where: {
-                    id
-                }
+                where: { id }
             }).then(comment => res.json({ comment }));
         }).catch(err => res.send(err));
     };

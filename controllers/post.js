@@ -8,9 +8,7 @@ module.exports = (function () {
     Post.post = (req, res, next) => {
         const { postId: id } = req.params;
         post.findOne({
-            where: {
-                id
-            }
+            where: { id }
         }).then(post => res.json({ post }));
     };
 
@@ -27,17 +25,13 @@ module.exports = (function () {
         const result = await post.update({
             title,
             content,
-            updatedAt: new Date().toUTCString()
+            updatedAt: Date.now()
         }, {
-            where: {
-                id
-            }
+            where: { id }
         }).then(ret => {
             console.log(ret);
             return post.findOne({
-                where: {
-                    id
-                }
+                where: { id }
             }).then(post => res.json({ post }));
         }).catch(err => res.send(err));
         // res.json(result);
@@ -48,7 +42,7 @@ module.exports = (function () {
         const { postId: id } = req.body;
         // res.send(`delete post: ${id}`);
         await post.update({
-                deletedAt: new Date().toUTCString()
+                deletedAt: Date.now()
             }, {
                 where: {
                     id,
@@ -67,9 +61,7 @@ module.exports = (function () {
         // res.send(`post list ${page}`);
         post.findAll({
             where: {
-                deletedAt: {
-                    [Op.eq]: null
-                }
+                deletedAt: { [Op.eq]: null }
             },
             order:[
                 ['createdAt', 'DESC']                
@@ -86,12 +78,10 @@ module.exports = (function () {
         comment.findAll({
             where: {
                 postId,
-                deletedAt: {
-                    [Op.eq]: null
-                }
+                deletedAt: { [Op.eq]: null }
             },
             order:[
-                ['createdAt', 'ASC']                
+                ['createdAt', 'ASC']
             ],
             offset,
             limit: 10  
