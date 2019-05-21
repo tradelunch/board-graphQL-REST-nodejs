@@ -58,8 +58,8 @@ module.exports = (function () {
         })
         .then(() => {
             return post.findOne({ where: { id } }).then(post => res.json({ post }));
-        }
-        ).catch(err => res.send(err));
+        })
+        .catch(err => res.send(err));
     };
 
     Post.list = (req, res, next) => {
