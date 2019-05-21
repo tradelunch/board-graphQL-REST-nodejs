@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
             //         isEmail: true
             //     }
             // },
+            // name: {
+            //     type: DataTypes.STRING,
+            //     primaryKey: true,
+            // },
             name: DataTypes.STRING,
             // password: DataTypes.STRING
         },

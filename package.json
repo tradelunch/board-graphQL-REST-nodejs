@@ -18,17 +18,18 @@
   },
   "homepage": "https://github.com/intothedeep/board-graphQL-REST-nodejs#readme",
   "dependencies": {
-    "bcrypt": "^3.0.6",
     "dotenv": "^8.0.0",
     "express": "^4.17.0",
-    "lodash": "^4.17.11",
     "moment": "^2.24.0",
-    "morgan": "^1.9.1",
     "mysql2": "^1.6.5",
     "sequelize": "^5.8.6"
   },
   "devDependencies": {
+    "bcrypt": "^3.0.6",
     "eslint": "^5.16.0",
+    "faker": "^4.1.0",
+    "lodash": "^4.17.11",
+    "morgan": "^1.9.1",
     "nodemon": "^1.19.0"
   }
 }

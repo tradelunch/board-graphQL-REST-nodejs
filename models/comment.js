@@ -7,6 +7,9 @@ module.exports = (sequelize, DataTypes) => {
             },
             content: {
                 type: DataTypes.TEXT,
+                validate : {
+                    len : [0, 500],
+                },
                 allowNull: false
             }
         },

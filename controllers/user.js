@@ -23,7 +23,7 @@ module.exports = (function () {
     U.update = (req, res, next) => {
         const { userId: id, name } = req.body;
         // res.send(`update user: ${id}, ${name}, ${email}, ${password}`);
-        return res.send('API Unauthorized').status(401);
+        return res.status(401).send('API Unauthorized');
         User.update({
             name,
             email,
@@ -40,7 +40,7 @@ module.exports = (function () {
     U.delete = (req, res, next) => {
         const { userId: id } = req.body;
         // res.send(`delete user: ${id}`);
-        return res.send('API Unauthorized').status(401);
+        return res.status(401).send('API Unauthorized');
 
         User.destroy({
             where: { id }

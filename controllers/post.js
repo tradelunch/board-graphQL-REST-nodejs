@@ -1,4 +1,4 @@
-const { Post, Comment } = require('../models');
+const { User, Post, Comment } = require('../models');
 const { Op } = require('sequelize');
 
 module.exports = (function () {
@@ -61,7 +61,11 @@ module.exports = (function () {
                 ['createdAt', 'DESC']                
             ],
             offset,
-            limit: 10                
+            limit: 10,
+            include: [{
+                model: User,
+                attributes: ["name"]
+            }]
         })
         .then(posts => res.json({ posts }))
         .catch(err => res.send(err));
