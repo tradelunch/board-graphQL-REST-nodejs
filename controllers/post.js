@@ -91,7 +91,7 @@ module.exports = (function () {
                 }
             },
             order:[
-                ['createdAt', 'DESC']                
+                ['createdAt', 'ASC']                
             ],
             offset,
             limit: 10  

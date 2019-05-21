@@ -1,24 +1,63 @@
+const { comment } = require('../models');
+const { Op } = require('sequelize');
+const moment = require('moment');
+
 module.exports = (function () {
     const Comment = {};
 
     Comment.comment = (req, res, next) => {
         const { commentId: id } = req.params;
-        res.send(`comment commentid: ${id}`);
+        // res.send(`comment commentid: ${id}`);
+        comment.findOne({
+            where: {
+                id
+            }
+        }).then(comment => res.json({ comment }));
     };
 
     Comment.create = (req, res, next) => {
-        const { title, content, userid } = req.body;
-        res.send(`create comment: ${content}, ${userid}`);
+        const { content, userId } = req.body;
+        // res.send(`create comment: ${content}, ${userid}`);
+        comment.create(req.body).then(comment => res.json({ comment }));
     };
 
-    Comment.update = (req, res, next) => {
-        const { title, content, commentId: id } = req.body;
-        res.send(`update comment: ${content}, ${id}`);
+    Comment.update = async (req, res, next) => {
+        const { content, commentId: id } = req.body;
+        // res.send(`update comment: ${content}, ${id}`);
+        // console.log(moment(Date.now()).tz("Asia/Seoul").format('YYYY-MM-DD-HH-mm-ss').toString());
+        await comment.update({
+            content,
+            updatedAt: moment(Date.now()).tz("Asia/Seoul")
+        }, {
+            where: {
+                id
+            }
+        }).then(ret => {
+            console.log(ret);
+            return comment.findOne({
+                where: {
+                    id
+                }
+            }).then(comment => res.json({ comment }));
+        }).catch(err => res.send(err));
     };
 
-    Comment.delete = (req, res, next) => {
+    Comment.delete = async (req, res, next) => {
         const { commentId: id } = req.body;
-        res.send(`delete comment: ${id}`);
+        // res.send(`delete comment: ${id}`);
+        // TODO 이미 삭제한 댓글 예외 처리
+        await comment.update({
+                deletedAt: new Date().getTimezoneOffset().toString()
+            }, {
+                where: {
+                    id,
+                    deletedAt: {
+                        [Op.eq]: null
+                    }
+            }
+        }).then(() => {
+            return comment.findOne({ where: { id } }).then(comment => res.json({ comment }));
+        }).catch(err => res.send(err));
     };
 
     // Comment.list = (req, res, next) => {
