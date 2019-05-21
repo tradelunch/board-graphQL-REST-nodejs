@@ -13,6 +13,14 @@ app.use(logger('DEV'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+app.get('/', (req, res) => {
+    res.send('root route');
+});
+
+app.use('/user', require('./routes/user'));
+app.use('/post', require('./routes/post'));
+app.use('/comment', require('./routes/comment'));
+
 // mysql db
 const db = require('./models');
 db.sequelize.authenticate()
@@ -29,13 +37,3 @@ db.sequelize.authenticate()
 .catch(err => {
     console.error('Unable to connect to the database:', err);
 });
-app.get('/', (req, res) => {
-    res.send('root route');
-});
-
-app.use('/user', require('./routes/user'));
-app.use('/post', require('./routes/post'));
-app.use('/comment', require('./routes/comment'));
-
-
-
