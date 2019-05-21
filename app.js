@@ -13,9 +13,11 @@ app.use(logger('DEV'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.get('/', (_, res, _) => {
+app.get('/', (req, res) => {
     res.send('root route');
 });
+
+app.use('/user', require('./routes/user'));
 
 app.listen(PORT_PROD, _ => {
     console.log('Express server running on', PORT_PROD);
