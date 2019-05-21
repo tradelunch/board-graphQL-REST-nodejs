@@ -27,12 +27,14 @@ module.exports = (function () {
             updatedAt: Date.now()
         }, {
             where: { id }
-        }).then(ret => {
+        })
+        .then(ret => {
             console.log(ret);
             return comment.findOne({
                 where: { id }
             }).then(comment => res.json({ comment }));
-        }).catch(err => res.send(err));
+        })
+        .catch(err => res.send(err));
     };
 
     Comment.delete = async (req, res, next) => {
@@ -48,9 +50,11 @@ module.exports = (function () {
                         [Op.eq]: null
                     }
             }
-        }).then(() => {
+        })
+        .then(() => {
             return comment.findOne({ where: { id } }).then(comment => res.json({ comment }));
-        }).catch(err => res.send(err));
+        })
+        .catch(err => res.send(err));
     };
 
     // Comment.list = (req, res, next) => {

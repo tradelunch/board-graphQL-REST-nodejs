@@ -64,7 +64,9 @@ module.exports = (function () {
             ],
             offset,
             limit: 10
-        }).then(users => res.json({ users }));
+        })
+        .then(users => res.json({ users }))
+        .catch(err => res.send(err));
     };
 
     User.userPosts =  (req, res, next) => {
@@ -81,7 +83,9 @@ module.exports = (function () {
             ],
             offset,
             limit: 10
-        }).then(posts => res.json({ posts }));
+        })
+        .then(posts => res.json({ posts }))
+        .catch(err => res.send(err));
     };
 
     User.userComments =  (req, res, next) => {
@@ -98,7 +102,9 @@ module.exports = (function () {
             ],
             offset,
             limit: 10
-        }).then(comments => res.json({ comments }));
+        })
+        .then(comments => res.json({ comments }))
+        .catch(err => res.send(err));
     };    
 
     return User;

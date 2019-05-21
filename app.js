@@ -29,10 +29,10 @@ db.sequelize.authenticate()
     db.sequelize.sync({ force: false });
 })
 .then(() => {
+    console.log('DB Sync complete.');
     app.listen(PORT_PROD, _ => {
         console.log('Express server running on', PORT_PROD);
     });
-    console.log('DB Sync complete.');
 })
 .catch(err => {
     console.error('Unable to connect to the database:', err);

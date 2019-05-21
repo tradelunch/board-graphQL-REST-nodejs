@@ -9,13 +9,17 @@ module.exports = (function () {
         const { postId: id } = req.params;
         post.findOne({
             where: { id }
-        }).then(post => res.json({ post }));
+        })
+        .then(post => res.json({ post }))
+        .catch(err => res.send(err));
     };
 
     Post.create = (req, res, next) => {
         const { title, content, postId: id } = req.body;
         // res.send(`create post: ${title}, ${content}, ${userid}`);
-        post.create(req.body).then(post => res.json({ post }));
+        post.create(req.body)
+        .then(post => res.json({ post }))
+        .catch(err => res.send(err));
     };
 
     Post.update = async (req, res, next) => {
@@ -28,14 +32,15 @@ module.exports = (function () {
             updatedAt: Date.now()
         }, {
             where: { id }
-        }).then(ret => {
+        })
+        .then(ret => {
             console.log(ret);
             return post.findOne({
                 where: { id }
-            }).then(post => res.json({ post }));
-        }).catch(err => res.send(err));
-        // res.json(result);
-        // console.log('=-=-=-=-=- ', result);
+            })
+            .then(post => res.json({ post }));
+        })
+        .catch(err => res.send(err));
     };
 
     Post.delete = async (req, res, next) => {
@@ -50,9 +55,11 @@ module.exports = (function () {
                         [Op.eq]: null
                     }
             }
-        }).then(() => {
+        })
+        .then(() => {
             return post.findOne({ where: { id } }).then(post => res.json({ post }));
-        }).catch(err => res.send(err));
+        }
+        ).catch(err => res.send(err));
     };
 
     Post.list = (req, res, next) => {
@@ -68,7 +75,9 @@ module.exports = (function () {
             ],
             offset,
             limit: 10                
-        }).then(posts => res.json({ posts }));
+        })
+        .then(posts => res.json({ posts }))
+        .catch(err => res.send(err));
     };
 
     Post.postComments =  (req, res, next) => {
@@ -85,7 +94,9 @@ module.exports = (function () {
             ],
             offset,
             limit: 10  
-        }).then(comments => res.json({ comments }));
+        })
+        .then(comments => res.json({ comments }))
+        .catch(err => res.send(err));
     };    
 
     return Post;
