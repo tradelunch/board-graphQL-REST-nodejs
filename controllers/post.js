@@ -20,12 +20,13 @@ module.exports = (function () {
     };
 
     P.update = async (req, res, next) => {
-        const { title, content, postId: id } = req.body;
+        const { title, content, author, postId: id } = req.body;
         // res.send(`update post: ${title}, ${content}, ${id}`);
         // TODO update할 때 lock 걸기
         const result = await Post.update({
             title,
-            content
+            content,
+            author
         }, {
             where: { id }
         })

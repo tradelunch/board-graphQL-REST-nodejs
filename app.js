@@ -42,6 +42,7 @@ db.sequelize.authenticate()
     await db.Post.bulkCreate(
         times(20, () => ({
             title: faker.lorem.sentence(),
+            author: faker.lorem.word(),
             content: faker.lorem.paragraph(),
             userId: random(1, 11)
         }))
