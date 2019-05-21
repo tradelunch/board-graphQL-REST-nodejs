@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const controller = require('../controllers/post');
+const controller = require('../controllers/Post');
 
 router.get('/:postId([\\d]+)?', controller.post);
 router.post('/', controller.create);

@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Comment = sequelize.define('comment', {
+    const Comment = sequelize.define('Comment', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -8,20 +8,11 @@ module.exports = (sequelize, DataTypes) => {
             content: {
                 type: DataTypes.TEXT,
                 allowNull: false
-            },
-            deletedAt: {
-                type: DataTypes.DATE,
-                allowNull: true
             }
         },
         {
             freezeTableName: true,
         }
     );
-
-    Comment.associate = (models) => {
-        Comment.belongsTo(models.post);
-    };
-
     return Comment;
 }

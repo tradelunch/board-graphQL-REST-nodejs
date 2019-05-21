@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const controller = require('../controllers/user');
+const controller = require('../controllers/User');
 
 router.get('/:userId([\\d]+)?', controller.user);
 router.post('/', controller.create);

@@ -1,33 +1,31 @@
-const { post, comment } = require('../models');
+const { Post, Comment } = require('../models');
 const { Op } = require('sequelize');
 
-
 module.exports = (function () {
-    const Post = {};
+    const P = {};
 
-    Post.post = (req, res, next) => {
+    P.post = (req, res, next) => {
         const { postId: id } = req.params;
-        post.findByPk(id)
+        Post.findByPk(id)
         .then(post => res.json({ post }))
         .catch(err => res.send(err));
     };
 
-    Post.create = (req, res, next) => {
-        const { title, content, postId: id } = req.body;
+    P.create = (req, res, next) => {
+        const { title, content, userId } = req.body;
         // res.send(`create post: ${title}, ${content}, ${userid}`);
-        post.create(req.body)
+        Post.create(req.body)
         .then(post => res.json({ post }))
         .catch(err => res.send(err));
     };
 
-    Post.update = async (req, res, next) => {
+    P.update = async (req, res, next) => {
         const { title, content, postId: id } = req.body;
         // res.send(`update post: ${title}, ${content}, ${id}`);
         // TODO update할 때 lock 걸기
-        const result = await post.update({
+        const result = await Post.update({
             title,
-            content,
-            updatedAt: Date.now()
+            content
         }, {
             where: { id }
         })
@@ -44,33 +42,21 @@ module.exports = (function () {
         .catch(err => res.status(403).send(err));
     };
 
-    Post.delete = async (req, res, next) => {
+    P.delete = (req, res, next) => {
         const { postId: id } = req.body;
         // res.send(`delete post: ${id}`);
-        await post.update({
-                deletedAt: Date.now()
-            }, {
-                where: {
-                    id,
-                    deletedAt: {
-                        [Op.eq]: null
-                    }
-            }
-        })
+        Post.destroy({ where: { id } })
         .then(() => {
-            return post.findOne({ where: { id } }).then(post => res.json({ post }));
+            return Post.findOne({ where: { id } }).then(post => res.json({ post }));
         })
         .catch(err => res.send(err));
     };
 
-    Post.list = (req, res, next) => {
+    P.list = (req, res, next) => {
         const { page = 1 } = req.params;
         const offset = page >=1 ? (page - 1) * 10 : 0;
         // res.send(`post list ${page}`);
-        post.findAll({
-            where: {
-                deletedAt: { [Op.eq]: null }
-            },
+        Post.findAll({
             order:[
                 ['createdAt', 'DESC']                
             ],
@@ -81,15 +67,12 @@ module.exports = (function () {
         .catch(err => res.send(err));
     };
 
-    Post.postComments =  (req, res, next) => {
+    P.postComments =  (req, res, next) => {
         const { postId, page } = req.params;
         const offset = page >=1 ? (page - 1) * 10 : 0;
         // res.send(`GET comments with postid = ${id} and page = ${page}`);
-        comment.findAll({
-            where: {
-                postId,
-                deletedAt: { [Op.eq]: null }
-            },
+        Comment.findAll({
+            where: { postId },
             order:[
                 ['createdAt', 'ASC']
             ],
@@ -98,8 +81,7 @@ module.exports = (function () {
         })
         .then(comments => res.json({ comments }))
         .catch(err => res.send(err));
-    };    
-
-    return Post;
+    };
+    return P;
 })();
 

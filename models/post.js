@@ -1,18 +1,17 @@
 module.exports = (sequelize, DataTypes) => {
-    const Post = sequelize.define('post', {
+    const Post = sequelize.define('Post', {
             id: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
                 autoIncrement: true
             },
-            title: DataTypes.STRING,
+            title: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
             content: {
                 type: DataTypes.TEXT,
                 allowNull: false
-            },
-            deletedAt: {
-                type: DataTypes.DATE,
-                allowNull: true
             }
         },
         {
@@ -21,7 +20,12 @@ module.exports = (sequelize, DataTypes) => {
     );
 
     Post.associate = (models) => {
-        Post.hasMany(models.comment);
+        Post.hasMany(models.Comment, {
+            as: 'Comment',
+            foreignKey: 'postId',
+            sourceKey: 'id',
+            onDelete: 'CASCADE'
+        });
     };
 
     return Post;
