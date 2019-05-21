@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/intothedeep/board-graphQL-REST-nodejs#readme",
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "dotenv": "^8.0.0",
     "express": "^4.17.0",
     "lodash": "^4.17.11",
