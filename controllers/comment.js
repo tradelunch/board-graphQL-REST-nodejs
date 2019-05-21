@@ -2,7 +2,7 @@ module.exports = (function () {
     const Comment = {};
 
     Comment.comment = (req, res, next) => {
-        const { commentid: id } = req.params;
+        const { commentId: id } = req.params;
         res.send(`comment commentid: ${id}`);
     };
 
@@ -12,12 +12,12 @@ module.exports = (function () {
     };
 
     Comment.update = (req, res, next) => {
-        const { title, content, commentid: id } = req.body;
+        const { title, content, commentId: id } = req.body;
         res.send(`update comment: ${content}, ${id}`);
     };
 
     Comment.delete = (req, res, next) => {
-        const { commentid: id } = req.body;
+        const { commentId: id } = req.body;
         res.send(`delete comment: ${id}`);
     };
 

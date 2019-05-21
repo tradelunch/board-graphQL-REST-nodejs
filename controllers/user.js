@@ -2,7 +2,7 @@ module.exports = (function () {
     const User = {};
 
     User.user = (req, res, next) => {
-        const { userid: id } = req.params;
+        const { userId: id } = req.params;
         res.send(`user userid: ${id}`);
     };
 
@@ -12,12 +12,12 @@ module.exports = (function () {
     };
 
     User.update = (req, res, next) => {
-        const { userid: id, name, email, password } = req.body;
+        const { userId: id, name, email, password } = req.body;
         res.send(`update user: ${id}, ${name}, ${email}, ${password}`);
     };
 
     User.delete = (req, res, next) => {
-        const { userid: id } = req.body;
+        const { userId: id } = req.body;
         res.send(`delete user: ${id}`);
     };
 
@@ -27,12 +27,12 @@ module.exports = (function () {
     };
 
     User.userPosts =  (req, res, next) => {
-        const { userid: id, page } = req.params;
+        const { userId: id, page } = req.params;
         res.send(`GET posts with userid = ${id} and page = ${page}`);
     };
 
     User.userComments =  (req, res, next) => {
-        const { userid: id, page } = req.params;
+        const { userId: id, page } = req.params;
         res.send(`GET comments with userid = ${id} and page = ${page}`);
     };    
 
