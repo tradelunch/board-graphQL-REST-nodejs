@@ -6,11 +6,10 @@ const faker = require('faker');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
 
-
 dotenv.config();
-const app = express();
+const { PORT } = process.env;
 
-const { PORT_PROD } = process.env;
+const app = express();
 
 // middleware
 app.use(logger('dev'));
@@ -30,17 +29,15 @@ const db = require('./models');
 db.sequelize.authenticate()
 .then(async () => {
     console.log('Connection has been established successfully.');
-    await db.sequelize.sync({ force: true });
-
-    // dummy data
-    await db.User.create({ name: 'admin' });
+    await db.sequelize.sync({ force: false });
+    // await db.User.create({ name: 'admin' });
     await db.User.bulkCreate(
         times(10, () => ({
             name: `${faker.name.firstName()} ${faker.name.lastName()}`
         }))
     );
     await db.Post.bulkCreate(
-        times(20, () => ({
+        times(50, () => ({
             title: faker.lorem.sentence(),
             author: faker.lorem.word(),
             content: faker.lorem.paragraph(),
@@ -57,8 +54,8 @@ db.sequelize.authenticate()
 })
 .then(() => {
     console.log('DB Sync complete.');
-    app.listen(PORT_PROD, _ => {
-        console.log('Express server running on', PORT_PROD);
+    app.listen(PORT, _ => {
+        console.log('Express server running on', PORT);
     });
 })
 .catch(err => {

@@ -62,11 +62,7 @@ module.exports = (function () {
                 ['createdAt', 'DESC']                
             ],
             offset,
-            limit: 10,
-            include: [{
-                model: User,
-                attributes: ["name"]
-            }]
+            limit: 10
         })
         .then(posts => res.json({ posts }))
         .catch(err => res.send(err));

@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 autoIncrement: true
             },
+            name: DataTypes.STRING,
             // email: {
             //     type: DataTypes.STRING,
             //     unique: true,
@@ -19,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             //     type: DataTypes.STRING,
             //     primaryKey: true,
             // },
-            name: DataTypes.STRING,
             // password: DataTypes.STRING
         },
         {
