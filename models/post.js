@@ -5,10 +5,6 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 autoIncrement: true
             },
-            author: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
             title: {
                 type: DataTypes.STRING,
                 allowNull: false
@@ -30,11 +26,10 @@ module.exports = (sequelize, DataTypes) => {
             sourceKey: 'id',
             onDelete: 'CASCADE'
         });
-        // Post.belongsTo(models.User, {
-        //     foreignKey: 'userName',
-        //     targetKey: 'name',
-        //     constraints: false,
-        // });
+        Post.belongsTo(models.User, {
+            foreignKey: 'userId',
+            targetKey: 'id',
+        });
     };
 
     return Post;

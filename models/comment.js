@@ -17,5 +17,15 @@ module.exports = (sequelize, DataTypes) => {
             freezeTableName: true,
         }
     );
+    Comment.associate = (models) => {
+        Comment.belongsTo(models.User, {
+            foreignKey: 'userId',
+            targetKey: 'id',
+        });
+        Comment.belongsTo(models.Post, {
+            foreignKey: 'postId',
+            targetKey: 'id',
+        });
+    };
     return Comment;
 }

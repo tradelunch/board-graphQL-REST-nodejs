@@ -9,7 +9,21 @@ const bodyParser = require('body-parser');
 dotenv.config();
 const { PORT } = process.env;
 
+const db = require('./models');
+
+const { ApolloServer } = require('apollo-server-express');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
+
+// console.log(typeDefs);
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: { db }
+});
+
 const app = express();
+server.applyMiddleware({ app });
 
 // middleware
 app.use(logger('dev'));
@@ -25,32 +39,32 @@ app.use('/post', require('./routes/post'));
 app.use('/comment', require('./routes/comment'));
 
 // mysql db
-const db = require('./models');
 db.sequelize.authenticate()
 .then(async () => {
     console.log('Connection has been established successfully.');
-    await db.sequelize.sync({ force: false });
+    // await db.sequelize.sync({ force: false });
     // await db.User.create({ name: 'admin' });
-    await db.User.bulkCreate(
-        times(10, () => ({
-            name: `${faker.name.firstName()} ${faker.name.lastName()}`
-        }))
-    );
-    await db.Post.bulkCreate(
-        times(50, () => ({
-            title: faker.lorem.sentence(),
-            author: faker.lorem.word(),
-            content: faker.lorem.paragraph(),
-            userId: random(1, 11)
-        }))
-    );
-    await db.Comment.bulkCreate(
-        times(100, () => ({
-            content: faker.lorem.sentence(),
-            userId: random(1, 11),
-            postId: random(1, 20)
-        }))
-    );
+    // await db.User.bulkCreate(
+    //     times(10, () => ({
+    //         name: `${faker.name.firstName()} ${faker.name.lastName()}`
+    //     }))
+    // );
+    // await db.Post.bulkCreate(
+    //     times(50, () => ({
+    //         title: faker.lorem.sentence(),
+    //         // author: faker.lorem.word(),
+    //         content: faker.lorem.paragraph(),
+    //         userId: random(1, 10)
+    //     }))
+    // );
+    // await db.Comment.bulkCreate(
+    //     times(100, () => ({
+    //         content: faker.lorem.sentence(),
+    //         // author: faker.lorem.word(),
+    //         userId: random(1, 10),
+    //         postId: random(1, 20)
+    //     }))
+    // );
 })
 .then(() => {
     console.log('DB Sync complete.');

@@ -12,17 +12,18 @@ module.exports = (function () {
     };
 
     C.create = (req, res, next) => {
-        const { content, userId, postId } = req.body;
+        const { content, author, userId, postId } = req.body;
         // res.send(`create comment: ${content}, ${userid}`);
         Comment.create(req.body)
         .then(comment => res.json({ comment }));
     };
 
     C.update = (req, res, next) => {
-        const { content, commentId: id } = req.body;
+        const { content, author, commentId: id } = req.body;
         // res.send(`update comment: ${content}, ${id}`);
         Comment.update({
-            content
+            content,
+            author
         }, {
             where: { id }
         })
