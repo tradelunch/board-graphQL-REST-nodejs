@@ -7,7 +7,7 @@ const typeDefs = gql`
         createdAt: String!
 
         posts(limit: Int offset: Int ): [Post]
-        comments(limit: Int offset: Int): [Comment]
+        comments(limit: Int offset: Int): [Comment!]!
     }
     type Post {
         id: ID!
@@ -17,7 +17,7 @@ const typeDefs = gql`
         createdAt: String!
         
         author: User!
-        comments(limit: Int offset: Int): [Comment]
+        comments(limit: Int offset: Int): [Comment!]!
     }
     type Comment {
         id: ID!
@@ -48,7 +48,7 @@ const typeDefs = gql`
         deletePost(postId: ID!): Int!
 
         createComment(userId: ID!, postId: ID!, content: String!): Comment!
-        updateComment(commentId: ID!, content:String!): [Int]!
+        updateComment(commentId: ID!, content:String!): [Int!]!
         deleteComment(commentId: ID!): Int!
     }
 `
