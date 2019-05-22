@@ -38,7 +38,8 @@ app.use('/post', require('./routes/post'));
 app.use('/comment', require('./routes/comment'));
 
 // mysql db
-db.sequelize.authenticate()
+db.sequelize
+.authenticate()
 .then(async () => {
     console.log('Connection has been established successfully.');
     await db.sequelize.sync({ force: false });

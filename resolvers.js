@@ -20,7 +20,7 @@ const resolvers = {
         post: (parent, { id }, { db: { Post } }, info) => dao.findByPk(Post, id),
         comment: (parent, { id }, { db: { Comment } }, info) => dao.findByPk(Comment, id),
 
-        users: (parent, args, { db: { User } }, info) => dao.findAll(User),
+        users: (parent, { limit, offset }, { db: { User } }, info) => dao.findAll(User, limit, offset, [ ['id', 'ASC'] ], {}),
         posts: (parent, { limit, offset }, { db: { Post } }, info) => dao.findAll(Post, limit, offset, [ ['createdAt', 'DESC'] ], {}),
         comments: (parent, { limit, offset }, { db: { Comment } }, info) => dao.findAll(Comment, limit, offset, [ ['createdAt', 'ASC'] ], {}),
     },

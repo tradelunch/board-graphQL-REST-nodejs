@@ -14,11 +14,11 @@ module.exports = (sequelize, DataTypes) => {
             },
             postId: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
             },
             userId: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
             }
         }, {
             freezeTableName: true,
@@ -28,10 +28,14 @@ module.exports = (sequelize, DataTypes) => {
         Comment.belongsTo(models.User, {
             foreignKey: 'userId',
             targetKey: 'id',
+            hooks: true,
+            onDelete: 'cascade'
         });
         Comment.belongsTo(models.Post, {
             foreignKey: 'postId',
             targetKey: 'id',
+            hooks: true,
+            onDelete: 'cascade'
         });
     };
     return Comment;

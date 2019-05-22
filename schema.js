@@ -34,10 +34,10 @@ const typeDefs = gql`
         posts(limit: Int offset: Int): [Post!]!
 
         user(id: ID!): User!
-        users: [User!]!
+        users(limit: Int offset: Int): [User!]!
 
         comment(id: ID!): Comment!
-        comments: [Comment!]!
+        comments(limit: Int offset: Int): [Comment!]!
 
     }
     type Mutation {
@@ -48,7 +48,7 @@ const typeDefs = gql`
         deletePost(postId: ID!): Int!
 
         createComment(userId: ID!, postId: ID!, content: String!): Comment!
-        updateComment(commentId: ID!, content:String!): [Int!]!
+        updateComment(commentId: ID!, content:String!): [Int]!
         deleteComment(commentId: ID!): Int!
     }
 `

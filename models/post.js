@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
             },
             userId: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
+                onDelete: 'CASCADE'
             }
         }, {
             freezeTableName: true,
@@ -32,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
         Post.belongsTo(models.User, {
             foreignKey: 'userId',
             targetKey: 'id',
+            onDelete: 'CASCADE'
         });
     };
 
