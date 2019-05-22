@@ -24,8 +24,8 @@ Dao.prototype.findAll = async (model, limit, offset, order = [ ['createdAt', 'DE
     });
 };
 
-Dao.prototype.findOne = async (model, where = {}) => {
-    return await model.findOne({ where });
-}
+// Dao.prototype.findOne = async (model, where = {}) => {
+//     return await model.findOne({ where });
+// }
 
 module.exports = Dao;

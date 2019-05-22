@@ -11,21 +11,25 @@ module.exports = (function () {
 
         try {
             const comment = await dao.findByPk(Comment, id);
-            if (comment)
-                return res.status(200).json({ comment });
-            else
+            if (comment) {
+                const post = await comment.getPost();
+                const user = await comment.getUser();                
+                return res.status(200).json({ comment, post, user });
+            } else
                 return res.status(404).send('Not Found');
         } catch (err) {
-            return res.status(400).json({ err });
+            return res.status(500).json({ err });
         }
     };
 
     C.create = async (req, res, next) => {
         try {
             const comment = await dao.create(Comment, req.body);
-            if (comment)
-                return res.status(200).json({ comment });
-            else
+            if (comment) {
+                const post = await comment.getPost();
+                const user = await comment.getUser();
+                return res.status(200).json({ comment, post, user });
+            } else
                 return res.status(400).send('Failed to Create!');
         } catch (err) {
             return res.status(500).json({ err });
@@ -40,7 +44,9 @@ module.exports = (function () {
             const result = await dao.updateById(Comment, { content, author }, id);
             if (result == 1) {
                 const comment = await dao.findByPk(Comment, id);
-                return res.status(200).json({ comment });
+                const post = await comment.getPost();
+                const user = await comment.getUser();
+                return res.status(200).json({ comment, post, user });
             } else
                 return res.status(400).send('Failed to Update!');
         } catch (err) {
@@ -58,7 +64,6 @@ module.exports = (function () {
             else
                 return res.status(400).send('Failed to Delete!');
         } catch (err) {
-            console.log(err);
             return res.status(500).send(err);
         }
     };

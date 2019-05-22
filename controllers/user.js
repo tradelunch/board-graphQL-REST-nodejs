@@ -1,99 +1,156 @@
 const { User, Post, Comment } = require('../models');
-const { Op } = require('sequelize');
+const Dao = require('../daos/dao');
 
+const dao = new Dao();
 module.exports = (function () {
     const U = {};
 
-    U.user = (req, res, next) => {
+    U.user = async (req, res, next) => {
         const { userId: id } = req.params;
-        // res.send(`user userid: ${id}`);
-        User.findByPk(id)
-        .then(user => res.json({ user }))
-        .catch(err => res.send(err));
+        if (!id) return res.status(400).send('Invalid Input');
+
+        try {
+            const user = await dao.findByPk(User, id);
+            if (user)
+                return res.status(200).json({ user });
+            else
+                return res.status(403).send('Not Found');
+        } catch (err) {
+            return res.status(400).send(err);
+        }
     };
 
-    U.create = (req, res, next) => {
-        const { name } = req.body;
-        // res.send(`create user: ${name}, ${email}, ${password}`);
-        User.create(req.body)
-        .then(user => res.json({ user }))
-        .catch(err => res.send(err));
+    U.create = async (req, res, next) => {
+        try {
+            const user = await dao.create(User, req.body);
+            if (user)
+                return res.status(200).json({ user });
+            else
+                return res.status(400).send('Failed to Create!');
+        } catch (err) {
+            return res.status(500).json({ err });
+        }
     };
 
-    U.update = (req, res, next) => {
+    U.update = async (req, res, next) => {
+        return res.status(401).send('API Unauthorized');
         const { userId: id, name } = req.body;
-        // res.send(`update user: ${id}, ${name}, ${email}, ${password}`);
-        return res.status(401).send('API Unauthorized');
-        User.update({
-            name,
-            email,
-        }, {
-            where: { id }
-        })
-        .then(result => {
-            return User.findOne({ where: { id } });
-        })
-        .then(user => res.json({ user }))
-        .catch(err => res.send(err));
+        if (!id) return res.status(400).send('Invalid Input');
+
+        try {
+            const result = await dao.updateById(User, { name}, id);
+            if (result == 1) {
+                const comment = await dao.findByPk(User, id);
+                return res.status(200).json({ User });
+            } else
+                return res.status(400).send('Failed to Update!');
+        } catch (err) {
+            return res.status(500).json({ err });
+        }
     };
 
-    U.delete = (req, res, next) => {
+    U.delete = async (req, res, next) => {
+        return res.status(401).send('API Unauthorized');
         const { userId: id } = req.body;
-        // res.send(`delete user: ${id}`);
-        return res.status(401).send('API Unauthorized');
-
-        User.destroy({
-            where: { id }
-        })
-        .then(result => res.json({ result }))
-        .catch(err => res.send(err));
+        if (!id) return res.status(400).send('Invalid Input');
+        try {
+            const result = await dao.destroyById(User, id);
+            if (result == 1)
+                return res.status(200).json({ result });
+            else
+                return res.status(400).send('Failed to Delete!');
+        } catch (err) {
+            return res.status(500).send(err);
+        }
     };
 
-    U.list = (req, res, next) => {
-        const { page = 1 } = req.params;
-        // res.send(`users list ${page}`);
-        const offset = page >=1 ? (page - 1) * 10 : 0;
-        User.findAll({
-            order:[
-                ['createdAt', 'DESC']
-            ],
-            offset,
-            limit: 10
-        })
-        .then(users => res.json({ users }))
-        .catch(err => res.send(err));
+    U.list = async (req, res, next) => {
+        let { page = 1, size: limit = 10} = req.params;
+        limit = Number.parseInt(limit)
+        const offset = page >=1 ? (page - 1) * limit : 0;
+        try {
+            const users = await dao.findAll(User, limit, offset, [ ['createdAt', 'DESC'] ], {});
+            if (users)
+                return res.status(200).json({ users });
+            else
+                return res.status(403).send('Not Found');
+        } catch (err) {
+            return res.status(500).json({ err });
+        }
     };
 
-    U.userPosts =  (req, res, next) => {
-        const { userId, page } = req.params;
-        // res.send(`GET posts with userid = ${id} and page = ${page}`);
-        const offset = page >=1 ? (page - 1) * 10 : 0;
-        Post.findAll({
-            where: { userId },
-            order:[
-                ['createdAt', 'DESC']
-            ],
-            offset,
-            limit: 10
-        })
-        .then(posts => res.json({ posts }))
-        .catch(err => res.send(err));
+    U.userPosts = async (req, res, next) => {
+        let { userId: id, page = 1, size: limit = 10 } = req.params;
+        limit = Number.parseInt(limit);
+        const offset = page >=1 ? (page - 1) * limit : 0;
+        try {
+            // 아래와 같은 결과
+            // const user = await dao.findByPk(User, id);
+            // const posts = await user.getPost({ limit, offset });
+            // return res.status(200).json({ user, posts });
+
+            const result = await User.findOne({
+                where: {
+                    id
+                },
+                include: [{
+                        model: Post,
+                        as: 'Post',
+                        where: {
+                            userId: id
+                        },
+                        order: [
+                            ['createdAt', 'DESC']
+                        ],
+                        limit,
+                        offset,
+                        required: false
+                    }]
+            });
+            if (result)
+                return res.status(200).json({ result });
+            else
+                return res.status(403).send('Not Found');
+        } catch (err) {
+            return res.status(500).json({ err });
+        }
     };
 
-    U.userComments =  (req, res, next) => {
-        const { userId, page } = req.params;
-        // res.send(`GET comments with userid = ${id} and page = ${page}`);
-        const offset = page >=1 ? (page - 1) * 10 : 0;
-        Comment.findAll({
-            where: { userId },
-            order:[
-                ['createdAt', 'DESC']
-            ],
-            offset,
-            limit: 10
-        })
-        .then(comments => res.json({ comments }))
-        .catch(err => res.send(err));
+    U.userComments = async (req, res, next) => {
+        let { userId: id, page = 1, size: limit = 10 } = req.params;
+        limit = Number.parseInt(limit);
+        const offset = page >=1 ? (page - 1) * limit : 0;
+        try {
+            // 아래와 같은 결과
+            // const user = await dao.findByPk(User, id);
+            // const comments = await user.getComment({ limit, offset });
+            // return res.status(200).json({ user, comments });
+
+            const result = await User.findOne({
+                where: {
+                    id
+                },
+                include: [{
+                        model: Comment,
+                        as: 'Comment',
+                        where: {
+                            userId: id
+                        },
+                        order: [
+                            ['createdAt', 'ASC']
+                        ],
+                        limit,
+                        offset,
+                        required: false
+                    }]
+            });
+            if (result)
+                return res.status(200).json({ result });
+            else
+                return res.status(403).send('Not Found');
+        } catch (err) {
+            return res.status(500).json({ err });
+        }
     };    
 
     return U;
