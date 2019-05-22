@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
                 primaryKey: true,
                 autoIncrement: true
             },
-            name: DataTypes.STRING,
+            name: {
+                type:DataTypes.STRING,
+                allowNull: false,
+            }
             // email: {
             //     type: DataTypes.STRING,
             //     unique: true,
@@ -21,8 +24,7 @@ module.exports = (sequelize, DataTypes) => {
             //     primaryKey: true,
             // },
             // password: DataTypes.STRING
-        },
-        {
+        }, {
             freezeTableName: true,
             // instanceMethods: {
             //     validPassword(password) {

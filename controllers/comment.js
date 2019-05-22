@@ -1,51 +1,66 @@
 const { Comment } = require('../models');
-const { Op } = require('sequelize');
+const Dao = require('../daos/dao');
+const dao = new Dao();
 
 module.exports = (function () {
     const C = {};
 
-    C.comment = (req, res, next) => {
+    C.comment = async (req, res, next) => {
         const { commentId: id } = req.params;
-        // res.send(`comment commentid: ${id}`);
-        Comment.findByPk(id)
-        .then(comment => res.json({ comment }));
+        if (!id) return res.status(400).send('Invalid Input');
+
+        try {
+            const comment = await dao.findByPk(Comment, id);
+            if (comment)
+                return res.status(200).json({ comment });
+            else
+                return res.status(404).send('Not Found');
+        } catch (err) {
+            return res.status(400).json({ err });
+        }
     };
 
-    C.create = (req, res, next) => {
-        const { content, author, userId, postId } = req.body;
-        // res.send(`create comment: ${content}, ${userid}`);
-        Comment.create(req.body)
-        .then(comment => res.json({ comment }));
+    C.create = async (req, res, next) => {
+        try {
+            const comment = await dao.create(Comment, req.body);
+            if (comment)
+                return res.status(200).json({ comment });
+            else
+                return res.status(400).send('Failed to Create!');
+        } catch (err) {
+            return res.status(500).json({ err });
+        }
     };
 
-    C.update = (req, res, next) => {
+    C.update = async (req, res, next) => {
         const { content, author, commentId: id } = req.body;
-        // res.send(`update comment: ${content}, ${id}`);
-        Comment.update({
-            content,
-            author
-        }, {
-            where: { id }
-        })
-        .then(ret => {
-            console.log(ret);
-            return comment.findOne({
-                where: { id }
-            }).then(comment => res.json({ comment }));
-        })
-        .catch(err => res.send(err));
+        if (!id) return res.status(400).send('Invalid Input');
+
+        try {
+            const result = await dao.updateById(Comment, { content, author }, id);
+            if (result == 1) {
+                const comment = await dao.findByPk(Comment, id);
+                return res.status(200).json({ comment });
+            } else
+                return res.status(400).send('Failed to Update!');
+        } catch (err) {
+            return res.status(500).json({ err });
+        }
     };
 
-    C.delete = (req, res, next) => {
+    C.delete = async (req, res, next) => {
         const { commentId: id } = req.body;
-        // res.send(`delete comment: ${id}`);
-        Comment.detroy({ where: { id } })
-        .then(() => (
-                Comment.findOne({ where: { id } })
-                .then(comment => res.json({ comment }))
-            )
-        )
-        .catch(err => res.send(err));
+        if (!id) return res.status(400).send('Invalid Input');
+        try {
+            const result = await dao.destroyById(Comment, id);
+            if (result == 1)
+                return res.status(200).json({ result });
+            else
+                return res.status(400).send('Failed to Delete!');
+        } catch (err) {
+            console.log(err);
+            return res.status(500).send(err);
+        }
     };
     return C;
 })();

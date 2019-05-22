@@ -15,7 +15,6 @@ const { ApolloServer } = require('apollo-server-express');
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
 
-// console.log(typeDefs);
 const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -42,7 +41,7 @@ app.use('/comment', require('./routes/comment'));
 db.sequelize.authenticate()
 .then(async () => {
     console.log('Connection has been established successfully.');
-    // await db.sequelize.sync({ force: false });
+    await db.sequelize.sync({ force: false });
     // await db.User.create({ name: 'admin' });
     // await db.User.bulkCreate(
     //     times(10, () => ({

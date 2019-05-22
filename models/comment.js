@@ -11,9 +11,16 @@ module.exports = (sequelize, DataTypes) => {
                     len : [0, 500],
                 },
                 allowNull: false
+            },
+            postId: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            userId: {
+                type: DataTypes.INTEGER,
+                allowNull: false
             }
-        },
-        {
+        }, {
             freezeTableName: true,
         }
     );
