@@ -1,25 +1,14 @@
+const Dao = require('./daos/dao');
+
+const dao = new Dao();
 const resolvers = {
     User: {
-        posts: async (parent, args, context, info) => {
-            const { limit, offset } = args;
-            return await parent.getPost({ limit, offset });
-        },
-        comments: async (parent, args, context, info) => {
-            const { limit, offset } = args;
-            return await parent.getComment({ limit, offset });
-        }
+        posts: async (parent, { limit, offset }, context, info) => await parent.getPost({ limit, offset }),
+        comments: async (parent, { limit, offset }, context, info) => await parent.getComment({ limit, offset })
     },
     Post: {
         author: async (parent, args, context, info) => await parent.getUser(),
-        comments: async (parent, args, context, info) => {
-            console.log(parent);
-            const { limit, offset } = args;
-            return await parent.getComment({ limit, offset,
-                order:[
-                    ['createdAt', 'ASC']
-                ],
-            });
-        }
+        comments: async (parent, { limit, offset }, context, info) => await parent.getComment({ limit, offset, order:[ ['createdAt', 'ASC'] ] })
     },
     Comment: {
         author: async (parent, args, context, info) => await parent.getUser(),
@@ -27,55 +16,25 @@ const resolvers = {
     },
 
     Query: {
-        user: async (parent, { id }, { db: { User } }, info) => await User.findByPk(id),
-        post: async (parent, { id }, { db: { Post } }, info) => await Post.findByPk(id),
-        comment: async (parent, { id }, { db: { Comment } }, info) => await Comment.findByPk(id),
+        user: (parent, { id }, { db: { User } }, info) => dao.findByPk(User, id),
+        post: (parent, { id }, { db: { Post } }, info) => dao.findByPk(Post, id),
+        comment: (parent, { id }, { db: { Comment } }, info) => dao.findByPk(Comment, id),
 
-        users: async (parent, args, { db: { User } }, info) => await User.findAll(),
-        posts: async (parent, args, { db: { Post } }, info) => {
-            const { limit, offset } = args;
-            return await Post.findAll({
-                order:[
-                    ['createdAt', 'DESC']
-                ],                
-                limit, 
-                offset 
-            });
-        },
-        comments: async (parent, args, { db: { Comment } }, info) => {
-            const { limit, offset } = args;
-            return await Comment.findAll({ 
-                order:[
-                    ['createdAt', 'ASC']
-                ],
-                limit, 
-                offset 
-            });
-        },
+        users: (parent, args, { db: { User } }, info) => dao.findAll(User),
+        posts: (parent, { limit, offset }, { db: { Post } }, info) => dao.findAll(Post, limit, offset, [ ['createdAt', 'DESC'] ], {}),
+        comments: (parent, { limit, offset }, { db: { Comment } }, info) => dao.findAll(Comment, limit, offset, [ ['createdAt', 'ASC'] ], {}),
     },
-    
+
     Mutation: {
-        createUser: async (parent, { name }, { db: { User } }, info) => await User.create({ name }),
+        createUser: (parent, { name }, { db: { User } }, info) => dao.create(User, { name }),
 
-        createPost: async (parent, { userId, title, content }, { db: { Post } }, info) => await Post.create({ userId, title, content }),
-        updatePost: async (parent, { postId: id, title, content }, { db: { Post } }, info) => {
-            return await Post.update({ title, content }, {
-                where: {
-                    id
-                }
-            });
-        },
-        deletePost: async (parent, { postId: id }, { db: { Post } }, info) => await Post.destroy({ where: { id } }),
+        createPost: (parent, { userId, title, content }, { db: { Post } }, info) => dao.create(Post, { userId, title, content }),
+        updatePost: (parent, { postId: id, title, content }, { db: { Post } }, info) => dao.updateById(Post, { title, content }, id),
+        deletePost: (parent, { postId: id }, { db: { Post } }, info) => dao.destroyById(Post, id),
 
-        createComment: async (parent, { postId, userId, title, content }, { db: { Comment } }, info) => await Comment.create({ title, content, userId, postId }),
-        updateComment: async (parent, { commentId: id, content }, { db }, info) => {
-            return await Comment.update({ content }, {
-                where: {
-                    id
-                }
-            });
-        },
-        deleteComment: async (parent, { commentId: id }, { db: { Comment } }, info) => await Comment.destroy({ where: { id } }),
+        createComment: (parent, { postId, userId, title, content }, { db: { Comment } }, info) => dao.create(Comment, { title, content, userId, postId }),
+        updateComment: (parent, { commentId: id, content }, { db: { Comment } }, info) => dao.updateById(Comment, { content }, id),
+        deleteComment: (parent, { commentId: id }, { db: { Comment } }, info) => dao.destroyById(Comment, id),
     }
 };
 
