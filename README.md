@@ -2,23 +2,33 @@
 
 
 
-## RESTful API
+- [RESTful API Detail](#REST)
 
-- 유저
-
-|                 Resource                 | Method | Description                                                  |
-| :--------------------------------------: | :----: | :----------------------------------------------------------- |
-|              /user/:userId               |  GET   | userid에 해당하는 유저 검색                                  |
-|                  /user                   |  POST  | user 생성 이름, 이메일, 비밀번호                             |
-|                  /user                   |  PUT   | user 수정 / 이름, 이메일, 비밀번호                           |
-|                  /user                   | DELETE | user 삭제 / user id                                          |
-|         /user/list/:page?/:size?         |  GET   | page에 해당하는 size만큼 유저 가져오기                       |
-|  /user/list/post/:userId/:page?/:size?   |  GET   | userid가 작성한 포스트 중 page에 해당하는 size만큼 포스트 가져오기 |
-| /user/list/comment/:userId/:page?/:size? |  GET   | userid가 작성한 댓글 중 page에 해당하는 size만큼 댓글 가져오기 |
+- [GraphQL Detail](#graphQL)
+- [DB Setting](#db)
+- [Project Setting](#setting)
+  - [Duumy Data](#dummy)
+- [Project Structure](#structure)
 
 
 
-- 포스트
+## <a id="REST">RESTful API</a>
+
+- User
+
+|                 Resource                 |   Method   | Description                                                  |
+| :--------------------------------------: | :--------: | :----------------------------------------------------------- |
+|              /user/:userId               |    GET     | userid에 해당하는 유저 검색                                  |
+|                  /user                   |    POST    | user 생성 이름, 이메일, 비밀번호                             |
+|                ~~/user~~                 |  ~~PUT~~   | ~~user 수정 / 이름, 이메일, 비밀번호~~                       |
+|                ~~/user~~                 | ~~DELETE~~ | ~~user 삭제 / user id~~                                      |
+|         /user/list/:page?/:size?         |    GET     | page에 해당하는 size만큼 유저 가져오기                       |
+|  /user/list/post/:userId/:page?/:size?   |    GET     | userid가 작성한 포스트 중 page에 해당하는 size만큼 포스트 가져오기 |
+| /user/list/comment/:userId/:page?/:size? |    GET     | userid가 작성한 댓글 중 page에 해당하는 size만큼 댓글 가져오기 |
+
+
+
+- Post
 
 |                 Resource                 | Method | Description                                                  |
 | :--------------------------------------: | :----: | :----------------------------------------------------------- |
@@ -31,7 +41,7 @@
 
 
 
-- 댓글
+- Comment
 
 |      Resource       | Method | Description                            |
 | :-----------------: | :----: | :------------------------------------- |
@@ -42,9 +52,23 @@
 
 
 
-## DB 설정
+# <a id="graphQL">GraphQL</a>
 
-- 사용할 DB 생성 및 user 생성
+| URL      | How to Use                              |
+| -------- | --------------------------------------- |
+| /graphql | Try Queries<br />- query<br />- mutaion |
+
+- [Example GraphQL Query](./docs/query/)
+  - [User](./docs/query/user.md)
+  - [Post](./docs/query/post.md)
+  - [Comment](./docs/query/post.md)
+
+
+
+## <a id="db"> DB 설정</a>
+
+- MySQL
+- Create DB, user for the project
 
 ```mysql
 CREATE DATABASE board;
@@ -55,10 +79,110 @@ FLUSH PRIVILEGES;
 
 
 
-## 프로젝트 설정
+## <a id="setting">Project Setting</a>
+
+- node.js: v10.15.3
+- npm packages
 
 ```bash
-npm i
-npm start
+  "dependencies": {
+    "apollo-server-express": "^2.5.0",
+    "dotenv": "^8.0.0",
+    "express": "^4.17.0",
+    "graphql": "^14.3.0",
+    "moment": "^2.24.0",
+    "mysql2": "^1.6.5",
+    "sequelize": "^5.8.6"
+  },
+  "devDependencies": {
+    "bcrypt": "^3.0.6",
+    "eslint": "^5.16.0",
+    "faker": "^4.1.0",
+    "lodash": "^4.17.11",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.0"
 ```
+
+- How to start
+
+```bash
+# git clone
+git clone https://github.com/intothedeep/board-graphQL-REST-nodejs.git
+# install packages
+npm i
+# start
+nodemon start
+```
+
+
+
+## <a id="structure">Project Structure</a>
+
+```bash
+# REST
+|app.js
+|--controllers
+|----index.js
+|----post.js
+|----user.js
+|----comment.js
+|--routes
+|----index.js
+|----post.js
+|----user.js
+|----comment.js
+|--models
+|----index.js
+|----Post.js
+|----User.js
+|----Comment.js
+
+|--daos
+
+# GraphQL
+|app.js
+|schema.js
+|resolvers.js
+
+# misc
+|--docs
+```
+
+
+
+### <a id="dummy">Setup Dummy Data</a>
+
+```js
+// app.js
+// This code block will generate dummy data and insert them into the DB
+await db.sequelize.sync({ force: true });
+await db.User.create({ name: 'admin' });
+await db.User.bulkCreate(
+  times(10, () => ({
+    name: `${faker.name.firstName()} ${faker.name.lastName()}`
+  }))
+);
+await db.Post.bulkCreate(
+  times(50, () => ({
+    title: faker.lorem.sentence(),
+    // author: faker.lorem.word(),
+    content: faker.lorem.paragraph(),
+    userId: random(1, 10)
+  }))
+);
+await db.Comment.bulkCreate(
+  times(100, () => ({
+    content: faker.lorem.sentence(),
+    // author: faker.lorem.word(),
+    userId: random(1, 10),
+    postId: random(1, 20)
+  }))
+);
+```
+
+
+
+
+
+
 

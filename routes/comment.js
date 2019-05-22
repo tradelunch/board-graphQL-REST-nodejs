@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const controller = require('../controllers/Comment');
+const { commentController: controller } = require('../controllers');
 
 router.get('/:commentId([\\d]+)?', controller.comment);
 router.post('/', controller.create);

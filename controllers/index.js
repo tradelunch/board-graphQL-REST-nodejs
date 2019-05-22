@@ -1,9 +1,9 @@
-const Comment = require('./comment');
-const Post = require('./post');
-const User = require('./user');
+const commentController = require('./comment');
+const postController = require('./post');
+const userController = require('./user');
 
 module.exports = {
-    Comment,
-    Post,
-    User
+    commentController,
+    postController,
+    userController
 }
