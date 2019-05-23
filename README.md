@@ -155,7 +155,12 @@ nodemon start
 ```js
 // app.js
 // This code block will generate dummy data and insert them into the DB
-await db.sequelize.sync({ force: true });
+
+// set this true if you want to reset DB.
+await db.sequelize.sync({ force: true }); 
+
+// When this block is active, dummy data will be created every time you restart server
+// To stop creating dummies, make this code below as comments
 await db.User.create({ name: 'admin' });
 await db.User.bulkCreate(
   times(10, () => ({
