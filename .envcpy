@@ -1,0 +1,6 @@
+PORT=8080
+
+MYSQL_DB="board"
+MYSQL_DB_USER="username"
+MYSQL_DB_PASSWORD="password"
+MYSQL_DB_HOST="localhost"
