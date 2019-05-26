@@ -3,9 +3,11 @@ const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
             id: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING,
                 primaryKey: true,
-                autoIncrement: true
+                validate: {
+                    is: /^[0-9a-z]+$/i
+                }
             },
             name: {
                 type:DataTypes.STRING,

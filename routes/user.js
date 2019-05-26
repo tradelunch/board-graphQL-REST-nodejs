@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { userController: controller } = require('../controllers');
 
-router.get('/:userId([\\d]+)?', controller.user);
+router.get('/:userId', controller.user);
 router.post('/', controller.create);
 router.put('/', controller.update);
 router.delete('/', controller.delete);

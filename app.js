@@ -44,24 +44,36 @@ db.sequelize
 .then(async () => {
     console.log('Connection has been established successfully.');
     await db.sequelize.sync({ force: false });
-    await db.User.create({ name: 'admin' });
+
+    const userIds = await db.User.findAll().map(user => user.id);
+    const newUserIds = [
+        ...new Set(
+            ['admin', ...times(10,() => faker.name.firstName())].filter(id => !userIds.includes(id)))
+        ];
     await db.User.bulkCreate(
-        times(10, () => ({
-            name: `${faker.name.firstName()} ${faker.name.lastName()}`
-        }))
+        newUserIds.map(id => ({
+                id,
+                name: `${id} ${faker.name.lastName()}`
+            })
+        )
     );
-    await db.Post.bulkCreate(
-        times(50, () => ({
+
+    console.log(newUserIds, newUserIds.length);
+
+    let posts = await db.Post.bulkCreate(
+        times(30, () => ({
             title: faker.lorem.sentence(),
             content: faker.lorem.paragraph(),
-            userId: random(1, 10)
+            userId: newUserIds[random(0, newUserIds.length - 1)]
         }))
     );
+
+    postIds = posts.map(post => post.id);
     await db.Comment.bulkCreate(
-        times(100, () => ({
+        times(300, () => ({
             content: faker.lorem.sentence(),
-            userId: random(1, 10),
-            postId: random(1, 20)
+            userId: newUserIds[random(0, newUserIds.length - 1)],
+            postId: postIds[random(0, 10)]
         }))
     );
 })
