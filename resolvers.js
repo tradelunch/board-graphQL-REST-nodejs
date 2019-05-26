@@ -23,6 +23,13 @@ const resolvers = {
         users: (parent, { limit, offset }, { db: { User } }, info) => dao.findAll(User, limit, offset, [ ['id', 'ASC'] ], {}),
         posts: (parent, { limit, offset }, { db: { Post } }, info) => dao.findAll(Post, limit, offset, [ ['createdAt', 'DESC'] ], {}),
         comments: (parent, { limit, offset }, { db: { Comment } }, info) => dao.findAll(Comment, limit, offset, [ ['createdAt', 'ASC'] ], {}),
+        count: async (parent, { type, id, model }, { db }, info) => {
+            try {
+                return await db[model].count( (type && id) ? { where: { [type]: id } } : {});
+            } catch (err) {
+                return err;
+            }
+        }
     },
 
     Mutation: {

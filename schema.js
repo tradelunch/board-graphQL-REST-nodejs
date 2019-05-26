@@ -39,6 +39,7 @@ const typeDefs = gql`
         comment(id: ID!): Comment!
         comments(limit: Int offset: Int): [Comment!]!
 
+        count(type: IDs! = userId id: ID! model: String!): Int!
     }
     type Mutation {
         createUser(name: String!): User!
@@ -50,6 +51,13 @@ const typeDefs = gql`
         createComment(userId: ID!, postId: ID!, content: String!): Comment!
         updateComment(commentId: ID!, content:String!): [Int!]!
         deleteComment(commentId: ID!): Int!
+    }
+
+    enum IDs {
+        id,
+        userId,
+        postId,
+        commentId
     }
 `
 
