@@ -3,12 +3,12 @@ const Dao = require('./daos/dao');
 const dao = new Dao();
 const resolvers = {
     User: {
-        posts: async (parent, { limit, offset }, context, info) => await parent.getPost({ limit, offset }),
-        comments: async (parent, { limit, offset }, context, info) => await parent.getComment({ limit, offset })
+        posts: async (parent, { limit, offset }, context, info) => await parent.getPosts({ limit, offset }),
+        comments: async (parent, { limit, offset }, context, info) => await parent.getComments({ limit, offset })
     },
     Post: {
         author: async (parent, args, context, info) => await parent.getUser(),
-        comments: async (parent, { limit, offset }, context, info) => await parent.getComment({ limit, offset, order:[ ['createdAt', 'ASC'] ] })
+        comments: async (parent, { limit, offset }, context, info) => await parent.getComments({ limit, offset, order:[ ['createdAt', 'ASC'] ] })
     },
     Comment: {
         author: async (parent, args, context, info) => await parent.getUser(),

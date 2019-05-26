@@ -51,13 +51,13 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = (models) => {
         User.hasMany(models.Post, {
-            as: 'Post',
+            as: 'posts',
             foreignKey: 'userId',
             sourceKey: 'id',
             onDelete: 'CASCADE'
         });
         User.hasMany(models.Comment, {
-            as: 'Comment',
+            as: 'comments',
             foreignKey: 'userId',
             sourceKey: 'id',
             onDelete: 'CASCADE'

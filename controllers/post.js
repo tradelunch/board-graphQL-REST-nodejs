@@ -10,22 +10,26 @@ module.exports = (function () {
         if (!id) return res.status(400).send('Invalid Input');
 
         try {
-            const post = await dao.findByPk(Post, id);
-            if (post) {
-                const user = await post.getUser();
-                const comments = await post.getComment({
-                    include: [{
-                        model: User,
-                        as: 'User'
-                    }],
-                    limit: 10,
-                    offset: 0,
+            const post = await Post.findOne({
+                where: { id },
+                include: [{
+                    model: User,
+                    as: 'user',
                     required: false
-                });
-                return res.status(200).json({ post, user, comments });
+                }, {
+                    model: Comment,
+                    as: 'comments',
+                    required: false,
+                    limit: 10,
+                    offset: 0
+                }],
+            });
+            if (post) {
+                return res.status(200).json({ post });
             } else
                 return res.status(404).send('Not Found');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }
     };
@@ -39,6 +43,7 @@ module.exports = (function () {
             } else
                 return res.status(400).send('Failed to Create!');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }        
         // res.send(`create post: ${title}, ${content}, ${userid}`);
@@ -49,22 +54,17 @@ module.exports = (function () {
 
     P.update = async (req, res, next) => {
         const { title, content, postId: id } = req.body;
+
         if (!id) return res.status(400).send('Invalid Input');
 
         try {
             const result = await dao.updateById(Post, { title, content }, id);
             if (result == 1) {
-                let post = await dao.findByPk(Post, id);
-                [ post ] = await Post.findAll({
-                    where: {
-                        id
-                    },
+                const post = await Post.findOne({
+                    where: { id },
                     include: [{
                             model: Comment,
-                            as: 'Comment',
-                            where: {
-                                postId: id
-                            },
+                            as: 'comments',
                             offset: 0,
                             limit: 10,
                             order: [
@@ -73,10 +73,7 @@ module.exports = (function () {
                             required: false
                         }, {
                             model: User,
-                            as: 'User',
-                            where: {
-                                id: post.userId
-                            },
+                            as: 'user',
                             required: false
                         }]
                 });
@@ -84,6 +81,7 @@ module.exports = (function () {
             } else
                 return res.status(400).send('Failed to Update!');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }
     };
@@ -103,23 +101,35 @@ module.exports = (function () {
         }
     };
 
+    P.total = async (req, res, next) => {
+        const total = await Post.count();
+        res.status(200).json({ total });
+    };
+
     P.list = async (req, res, next) => {
         let { page = 1, size: limit = 10} = req.params;
         limit = Number.parseInt(limit);
         const offset = page >=1 ? (page - 1) * limit : 0;
         try {
-            const posts = await dao.findAll(Post, limit, offset, [ ['createdAt', 'DESC'] ], {});
+            const posts = await Post.findAndCountAll({
+                limit,
+                offset,
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            });
             if (posts)
                 return res.status(200).json({ posts });
             else
                 return res.status(403).send('Not Found');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }
     };
 
     P.postComments = async (req, res, next) => {
-        let { postId: id, page = 1, size: limit = 10 } = req.params;
+        let { postId, page = 1, size: limit = 10 } = req.params;
         limit = Number.parseInt(limit);
         const offset = page >=1 ? (page - 1) * limit : 0;
         try {
@@ -128,33 +138,24 @@ module.exports = (function () {
             // const comments = await post.getComment({ limit, offset });
             // return res.status(200).json({ post, comments });
 
-            const post = await Post.findOne({
+            const comments = await Comment.findAndCountAll({
                 where: {
-                    id
+                    postId
                 },
+                limit,
+                offset,
                 include: [{
-                        model: Comment,
-                        as: 'Comment',
-                        where: {
-                            postId: id
-                        },
-                        order: [
-                            ['createdAt', 'ASC']
-                        ],
-                        limit,
-                        offset,
-                        required: false,
-                        include: [{
-                            model: User,
-                            as: 'User'
-                        }]
-                    }]
+                    model: User,
+                    as: 'user',
+                    required: false,
+                }]
             });
-            if (post)
-                return res.status(200).json({ post });
+            if (comments)
+                return res.status(200).json({ comments });
             else
                 return res.status(403).send('Not Found');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }
     };

@@ -1,4 +1,5 @@
 const { User, Post, Comment } = require('../models');
+const sequelize = require('sequelize');
 const Dao = require('../daos/dao');
 
 const dao = new Dao();
@@ -69,12 +70,17 @@ module.exports = (function () {
         limit = Number.parseInt(limit)
         const offset = page >=1 ? (page - 1) * limit : 0;
         try {
-            const users = await dao.findAll(User, limit, offset, [ ['createdAt', 'DESC'] ], {});
+            const users = await User.findAndCountAll({
+                limit,
+                offset, 
+                order: [ ['createdAt', 'DESC'] ]
+            });
             if (users)
                 return res.status(200).json({ users });
             else
                 return res.status(403).send('Not Found');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }
     };
@@ -93,18 +99,16 @@ module.exports = (function () {
                 where: {
                     id
                 },
+                // attributes: [ [sequelize.fn('COUNT', 'id'), 'PostCount'] ],
                 include: [{
                         model: Post,
-                        as: 'Post',
-                        where: {
-                            userId: id
-                        },
+                        as: 'posts',
                         order: [
                             ['createdAt', 'DESC']
                         ],
                         limit,
                         offset,
-                        required: false
+                        required: false,
                     }]
             });
             if (result)
@@ -112,6 +116,7 @@ module.exports = (function () {
             else
                 return res.status(403).send('Not Found');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }
     };
@@ -125,30 +130,24 @@ module.exports = (function () {
             // const user = await dao.findByPk(User, id);
             // const comments = await user.getComment({ limit, offset });
             // return res.status(200).json({ user, comments });
-
-            const result = await User.findOne({
-                where: {
-                    id
-                },
-                include: [{
-                        model: Comment,
-                        as: 'Comment',
-                        where: {
-                            userId: id
-                        },
-                        order: [
-                            ['createdAt', 'ASC']
-                        ],
-                        limit,
-                        offset,
-                        required: false
-                    }]
-            });
-            if (result)
-                return res.status(200).json({ result });
-            else
+            const user = await User.findByPk(id);
+            if (user) {                
+                const comments = await Comment.findAndCountAll({
+                    where: {
+                        userId: id,
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                    ],
+                    limit,
+                    offset,
+                    required: false
+                });
+                return res.status(200).json({ user, comments });
+            } else
                 return res.status(403).send('Not Found');
         } catch (err) {
+            console.log(err);
             return res.status(500).json({ err });
         }
     };    

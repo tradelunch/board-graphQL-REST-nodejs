@@ -25,12 +25,13 @@ module.exports = (sequelize, DataTypes) => {
 
     Post.associate = (models) => {
         Post.hasMany(models.Comment, {
-            as: 'Comment',
+            as: 'comments',
             foreignKey: 'postId',
             sourceKey: 'id',
             onDelete: 'CASCADE'
         });
         Post.belongsTo(models.User, {
+            as: 'user',
             foreignKey: 'userId',
             targetKey: 'id',
             onDelete: 'CASCADE'

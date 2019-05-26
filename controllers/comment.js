@@ -1,4 +1,4 @@
-const { Comment } = require('../models');
+const { Comment, User, Post } = require('../models');
 const Dao = require('../daos/dao');
 const dao = new Dao();
 
@@ -43,10 +43,19 @@ module.exports = (function () {
         try {
             const result = await dao.updateById(Comment, { content, author }, id);
             if (result == 1) {
-                const comment = await dao.findByPk(Comment, id);
-                const post = await comment.getPost();
-                const user = await comment.getUser();
-                return res.status(200).json({ comment, post, user });
+                const comment = await Comment.findOne({
+                    where: { id },
+                    include: [{
+                        model: User,
+                        as: 'user',
+                        required: false
+                    },{
+                        model: Post,
+                        as: 'post',
+                        required: false
+                    }]
+                });
+                return res.status(200).json({ comment });
             } else
                 return res.status(400).send('Failed to Update!');
         } catch (err) {
