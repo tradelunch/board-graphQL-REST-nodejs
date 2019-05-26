@@ -18,7 +18,15 @@ const resolvers = require('./resolvers');
 const server = new ApolloServer({
     typeDefs,
     resolvers,
-    context: { db }
+    context: { db },
+    formatError: error => {
+        console.log('error:', error);
+        return error;
+    },
+    formatResponse: response => {
+        console.log('response:', response);
+        return response;
+    },    
 });
 
 const app = express();

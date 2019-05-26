@@ -6,8 +6,8 @@ const typeDefs = gql`
         name: String!
         createdAt: String!
 
-        posts(limit: Int offset: Int ): [Post]
-        comments(limit: Int offset: Int): [Comment!]!
+        posts(limit: Int = 10 offset: Int  = 0): [Post]
+        comments(limit: Int = 10 offset: Int = 0): [Comment!]!
     }
     type Post {
         id: ID!
@@ -17,7 +17,7 @@ const typeDefs = gql`
         createdAt: String!
         
         author: User!
-        comments(limit: Int offset: Int): [Comment!]!
+        comments(limit: Int = 10 offset: Int = 0): [Comment!]!
     }
     type Comment {
         id: ID!
@@ -31,13 +31,13 @@ const typeDefs = gql`
     }
     type Query {
         post(id: ID!): Post!
-        posts(limit: Int offset: Int): [Post!]!
+        posts(limit: Int = 10 offset: Int = 0): [Post!]!
 
         user(id: ID!): User!
-        users(limit: Int offset: Int): [User!]!
+        users(limit: Int = 10 offset: Int = 0): [User!]!
 
         comment(id: ID!): Comment!
-        comments(limit: Int offset: Int): [Comment!]!
+        comments(limit: Int = 10 offset: Int = 0): [Comment!]!
 
         count(type: IDs! = userId id: ID! model: Models!): Int!
     }

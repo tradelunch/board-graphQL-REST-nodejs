@@ -34,27 +34,15 @@ mutation {
 ### get Query
 
 ```sql
-query {
-  post(id: 3) {
-    id
-    title
-    content
-    createdAt
-    author {
-      id
-      name
-    }
-    comments(limit: 10 offset: 2){
-      id
-      content
-      userId
-      createdAt
-    }
+query getPost ($id: ID = 5){
+  post(id: $id) {
+		...postFields
+    userId
   }
 }
 
-query {
-  posts(limit: 50 offset: 300) {
+query plainGetPost {
+  post(id: 2) {
     id
     title
     content
@@ -63,7 +51,7 @@ query {
       id
       name
     }
-    comments(limit: 5) {
+    comments(limit: 10 offset: 1){
       id
       content
       createdAt
@@ -73,6 +61,13 @@ query {
       }
     }
   }
+}
+
+fragment postFields on Post {
+  id
+  title
+  content
+  createdAt
 }
 ```
 
