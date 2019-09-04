@@ -73,7 +73,7 @@
 ```mysql
 CREATE DATABASE board;
 CREATE USER 'class'@'localhost' IDENTIFIED BY '101';
-ALTER USER 'class'@'localhost' IDENTIFIED WITH mysql_native_password BY '101'
+ALTER USER 'class'@'localhost' IDENTIFIED WITH mysql_native_password BY '101';
 GRANT ALL PRIVILEGES ON board.* TO 'class'@'localhost';
 FLUSH PRIVILEGES;
 ```
