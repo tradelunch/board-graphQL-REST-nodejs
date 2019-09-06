@@ -47,9 +47,10 @@ module.exports = (function () {
             return res.status(500).json({ err });
         }        
         // res.send(`create post: ${title}, ${content}, ${userid}`);
-        Post.create(req.body)
-        .then(post => res.json({ post }))
-        .catch(err => res.send(err));
+        Post
+            .create(req.body)
+            .then(post => res.json({ post }))
+            .catch(err => res.send(err));
     };
 
     P.update = async (req, res, next) => {
@@ -115,7 +116,8 @@ module.exports = (function () {
                 limit,
                 offset,
                 order: [
-                    ['createdAt', 'DESC']
+                    ['id', 'DESC'],
+                    ['createdAt', 'DESC'],
                 ]
             });
             if (posts)
